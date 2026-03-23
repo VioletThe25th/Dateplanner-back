@@ -2,6 +2,7 @@
 
 const OpenAI = require("openai");
 const { buildPrompt } = require("./promptbuilder");
+const { fetchPlacePhotoUrl } = require("./placePhotoService");
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -93,7 +94,32 @@ async function generateDatePlan(request, places) {
     throw new Error("OpenAI returned an empty response");
   }
 
-  return JSON.parse(jsonText);
+  const plan = JSON.parse(jsonText);
+
+  // Enrich stops with images
+  if (Array.isArray(plan.stops)) {
+    const enrichedStops = await Promise.all(
+      plan.stops.map(async (stop) => {
+        try {
+          const imageURL = await fetchPlacePhotoUrl(stop);
+          return {
+            ...stop,
+            imageURL: imageURL || null,
+          };
+        } catch (error) {
+          console.error("Image fetch failed for stop:", stop.name, error);
+          return {
+            ...stop,
+            imageURL: null,
+          };
+        }
+      })
+    );
+
+    plan.stops = enrichedStops;
+  }
+
+  return plan;
 }
 
 module.exports = {

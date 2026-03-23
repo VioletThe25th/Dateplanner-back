@@ -1,5 +1,3 @@
-
-
 function formatPlaces(places = []) {
   return places
     .slice(0, 40)
@@ -32,9 +30,17 @@ ${placesText}
 INSTRUCTIONS:
 - Select 2 to 4 stops
 - Create a logical and enjoyable flow
-- Mix variety (e.g cafe, activity, restaurant)
+- Write a very short summary
+- Mix variety when possible (e.g cafe, activity, restaurant)
 - Prefer places that are reasonably close to each other
 - Stay within budget
+- Use ONLY places from the AVAILABLE PLACES list above
+- NEVER invent, rename, or substitute a place
+- Keep the exact name, category, address, latitude, and longitude of each selected place from the provided data
+- If there are not enough good options, use fewer stops rather than inventing new ones
+- If the list is empty, return an empty stops array
+
+IMPORTANT: Every stop in the JSON must match one place from AVAILABLE PLACES exactly.
 
 OUTPUT FORMAT (JSON):
 {
